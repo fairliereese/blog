@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 sam = 'c2c12_500k.sam'
 
 def benchmark_write(samfile, threads):
-    bamfile = samfile[:-4]+'.bam'
+    bamfile = samfile[:-4]+'_pysam.bam'
     infile = pysam.AlignmentFile(samfile, 'r', threads=threads)
     outfile = pysam.AlignmentFile(bamfile, mode='wb',
                                     template=infile, threads=threads)
@@ -19,6 +19,7 @@ def benchmark_write(samfile, threads):
 df = pd.DataFrame(data=[i for i in range(1,17)], columns=['threads'])
 
 for i in range(10):
+
     times = []
     
     for j in range(1,17):
@@ -34,13 +35,15 @@ plt.savefig('pysam_multithread.png')
 
 # sort to ensure sequences are in the same order
 # convert to sam without the headers
-pref = samfile[:-4]
+pref = sam[:-4]
 
 # control - made with `samtools view -Sb sam > bam`
 infile = pref+'.bam'
 ofile = pref+'_sorted.bam'
 pysam.sort('-o', ofile, infile)
 ofile_sam = pref+'_sorted.sam'
+f = open(ofile_sam, 'w')
+f.close()
 pysam.view('-o', ofile_sam, ofile, save_stdout=ofile_sam)
 
 # pysam multithreaded bam we just wrote
@@ -48,6 +51,8 @@ infile = pref+'_pysam.bam'
 ofile = pref+'_pysam_sorted.bam'
 pysam.sort('-o', ofile, infile)
 ofile_sam = pref+'_pysam_sorted.sam'
+f = open(ofile_sam, 'w')
+f.close()
 pysam.view('-o', ofile_sam, ofile, save_stdout=ofile_sam)
 
 # compare md5sums
