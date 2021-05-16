@@ -116,13 +116,12 @@ print(ctrl_md5 == pysam_md5)
 ```
 
 
-
-
     True
 
 
-
 The comparison shows that the two are equivalent, so the file contents are identical, and I can now confidently use multithreading to compress sams to bams in pysam.
+
+Tested with pysam version 15.4.0.
 
 References: 
 * https://github.com/pysam-developers/pysam/issues/677
